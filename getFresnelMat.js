@@ -1,14 +1,15 @@
 import * as THREE from "three";
 
+
 function getFresnelMat({ rimHex = 0x4bc5c4, facingHex = 0x000000 } = {}) {
-    const uniforms = {
-        color1: { value: new THREE.Color(rimHex) },
-        color2: { value: new THREE.Color(facingHex) },
-        fresnelBias: { value: 0.1 },
-        fresnelScale: { value: 1.0 },
-        fresnelPower: { value: 4.0 },
-    };
-    const vs = `
+  const uniforms = {
+    color1: { value: new THREE.Color(rimHex) },
+    color2: { value: new THREE.Color(facingHex) },
+    fresnelBias: { value: 0.1 },
+    fresnelScale: { value: 1.0 },
+    fresnelPower: { value: 4.0 },
+  };
+  const vs = `
   uniform float fresnelBias;
   uniform float fresnelScale;
   uniform float fresnelPower;
@@ -28,7 +29,7 @@ function getFresnelMat({ rimHex = 0x4bc5c4, facingHex = 0x000000 } = {}) {
     gl_Position = projectionMatrix * mvPosition;
   }
   `;
-    const fs = `
+  const fs = `
   uniform vec3 color1;
   uniform vec3 color2;
   
@@ -39,14 +40,17 @@ function getFresnelMat({ rimHex = 0x4bc5c4, facingHex = 0x000000 } = {}) {
     gl_FragColor = vec4(mix(color2, color1, vec3(f)), f);
   }
   `;
-    const fresnelMat = new THREE.ShaderMaterial({
-        uniforms: uniforms,
-        vertexShader: vs,
-        fragmentShader: fs,
-        transparent: true,
-        opacity: 0.9, 
-        blending: THREE.AdditiveBlending,
-    });
-    return fresnelMat;
+  const fresnelMat = new THREE.ShaderMaterial({
+    uniforms: uniforms,
+    vertexShader: vs,
+    fragmentShader: fs,
+    transparent: true,
+    opacity: 0.9,
+    blending: THREE.AdditiveBlending,
+  });
+  return {
+    fresnelMat,
+    rimHex
+  }
 }
 export { getFresnelMat };

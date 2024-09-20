@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from "jsm/controls/OrbitControls.js";
 import getStarfield from "./getStarfield.js";
 import { getFresnelMat } from "./getFresnelMat.js";
+import { Color } from 'three';
+import { GUI } from 'dat.gui';
 
 let scene, camera, renderer, earthGroup, dayNight, cloudsMesh, fresnelMesh;
 
@@ -10,6 +12,8 @@ const nightMapJPG = './textures/earth_lights_lrg.jpg';
 const cloudMapJPG = './textures/05_earthcloudmaptrans.jpg';
 const fresnelMat = getFresnelMat();
 const numOfStars = 50000;
+console.log('fresnelMat:', fresnelMat);
+console.log('rimHex:', fresnelMat.rimHex);
 
 function initScene() {
     const w = window.innerWidth;
@@ -92,7 +96,7 @@ function createGlow() {
 }
 
 function createClouds(cloudMapJPG) {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1); 
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     scene.add(ambientLight);
     const textureLoader = new THREE.TextureLoader();
     const cloudMap = textureLoader.load(cloudMapJPG);
@@ -100,8 +104,8 @@ function createClouds(cloudMapJPG) {
     const geometry = new THREE.SphereGeometry(1, 64, 64);
     const cloudsMat = new THREE.MeshStandardMaterial({
         map: cloudMap,
-        transparent: true,   
-        opacity: 0.5,        
+        transparent: true,
+        opacity: 0.5,
         blending: THREE.AdditiveBlending,
     });
 
@@ -141,3 +145,30 @@ function init() {
 }
 
 init();
+
+const gui = new GUI();
+// const obj = {
+//     exampleProperty: 0
+// };
+// gui.add(obj, 'exampleProperty', 0, 100);
+const cloudsFolder = gui.addFolder("Clouds");
+cloudsFolder.add(cloudsMesh.rotation, 'x', 0, Math.PI * 2).name('Rotate X Axis');
+cloudsFolder.add(cloudsMesh.rotation, 'y', 0, Math.PI * 2).name('Rotate Y Axis');
+cloudsFolder.add(cloudsMesh.rotation, 'z', 0, Math.PI * 2).name('Rotate Z Axis');
+
+
+
+fresnelMat.rimHex = new Color(fresnelMat.rimHex);
+console.log('Converted rimHex to THREE.Color:', fresnelMat.rimHex);
+
+// Initialize glow parameters
+const glowParams = {
+    GlowColor: `#${fresnelMat.rimHex.getHexString()}` // Convert to hex string with '#'
+};
+
+// Add color control to dat.GUI
+gui.addColor(glowParams, 'GlowColor').onChange((value) => {
+    // Update the rimHex color using the new color from GUI
+    fresnelMat.rimHex.set(value);
+    console.log('Updated rimHex:', fresnelMat.rimHex);
+});
