@@ -1,6 +1,10 @@
 import * as THREE from "three";
+// import glowColor from "./index.js";
+// import glowCenterColor from "./index.js";
 
-
+// const glowColor = 0x4bc5c4;
+// const glowCenterColor = 0x000000;
+//function getFresnelMat({ rimHex = 0x4bc5c4, facingHex = 0x000000 } = {}) {
 function getFresnelMat({ rimHex = 0x4bc5c4, facingHex = 0x000000 } = {}) {
   const uniforms = {
     color1: { value: new THREE.Color(rimHex) },
@@ -48,9 +52,6 @@ function getFresnelMat({ rimHex = 0x4bc5c4, facingHex = 0x000000 } = {}) {
     opacity: 0.9,
     blending: THREE.AdditiveBlending,
   });
-  return {
-    fresnelMat,
-    rimHex
-  }
+  return fresnelMat;
 }
 export { getFresnelMat };
