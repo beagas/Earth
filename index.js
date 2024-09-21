@@ -7,14 +7,6 @@ import { GUI } from 'dat.gui';
 
 let scene, camera, renderer, earthGroup, dayNight, cloudsMesh, fresnelMesh;
 
-// const dayMapJPG = './textures/00_earthmap1k.jpg';
-// const nightMapJPG = './textures/earth_lights_lrg.jpg';
-// const cloudMapJPG = './textures/05_earthcloudmaptrans.jpg';
-// const fresnelMat = getFresnelMat();
-// const numOfStars = 50000;
-// console.log('fresnelMat:', fresnelMat);
-// console.log('rimHex:', fresnelMat.rimHex);
-
 const dayMapJPG = './textures/00_earthmap1k.jpg';
 const nightMapJPG = './textures/earth_lights_lrg.jpg';
 const cloudMapJPG = './textures/05_earthcloudmaptrans.jpg';
@@ -126,48 +118,13 @@ function createClouds(cloudMapJPG) {
 }
 
 function createStars(numOfStars) {
-
     if (starGroup) {
-        scene.remove(starGroup); // Remove the old group of stars from the scene
-        starGroup.children.forEach(star => star.geometry.dispose()); // Dispose geometry to free memory
+        scene.remove(starGroup); 
+        starGroup.children.forEach(star => star.geometry.dispose()); 
     }
-
-    // Create a new group to hold the stars
     starGroup = new THREE.Group();
-
-    //Create new stars
-    // for (let i = 0; i < numOfStars; i++) {
-    //     const star = new THREE.Mesh(
-    //         new THREE.SphereGeometry(0.1, 16, 16), // Small sphere for the star
-    //         new THREE.MeshBasicMaterial({ color: 0xffffff })
-    //     );
-
-    //     // Random position for each star
-    //     star.position.set(
-    //         (Math.random() - 0.5) * 100, // Random X position
-    //         (Math.random() - 0.5) * 100, // Random Y position
-    //         (Math.random() - 0.5) * 100  // Random Z position
-    //     );
-
-    //     // Add star to the group
-    //     starGroup.add(star);
-    // }
-
-    // Add the new group to the scene
-    // scene.add(starGroup);
-
-
-
-    // if (starGroup) {
-    //     scene.remove(starGroup); // Remove the entire group
-    // }
-    // starGroup = new THREE.Group();
-
-    // Create new stars and add them to the group
     let stars = getStarfield({ numStars: numOfStars });
     starGroup.add(stars);
-
-    // Add the new group of stars to the scene
     scene.add(starGroup);
 }
 
@@ -187,13 +144,10 @@ function animate() {
 }
 
 function init() {
-    //renderer.render(scene, camera);
-
     initScene();
     createEarth(dayMapJPG, nightMapJPG);
     createGlow(rimHex, facingHex);
     createClouds(cloudMapJPG);
-
     createStars(numOfStars);
     initControls();
     animate();
@@ -203,9 +157,9 @@ init();
 
 function renderControls() {
     controlCloudRotation();
-    controlSun()
-    controlNumOfStars()
-    controlGlowColor()
+    controlSun();
+    controlNumOfStars();
+    controlGlowColor();
 }
 
 renderControls()
@@ -243,13 +197,12 @@ function controlNumOfStars() {
 
 function controlGlowColor() {
     fresnelMesh.rimHex = new Color(rimHex);
-    console.log('Converted rimHex to THREE.Color:', rimHex);
 
     const glowParams = {
         GlowColor: `#${fresnelMesh.rimHex.getHexString()}`
     };
 
-    gui.addColor(glowParams, 'GlowColor').onChange((value) => {
+    gui.addColor(glowParams, 'GlowColor').name("Color of Glow").onChange((value) => {
         fresnelMesh.rimHex.set(value);
         fresnelMesh.material.uniforms.color1.value.set(fresnelMesh.rimHex);
         fresnelMesh.material.needsUpdate = true;

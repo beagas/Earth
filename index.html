@@ -3,11 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Getting Started with Three.js</title>
+    <title>Earth Visualization</title>
     <style>
-      body {
-        margin: 0;
-      }
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #earth-name-container {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            pointer-events: none; /* Makes sure the labels are not interactive */
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+        }
+        #earth-name {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #earth-description {
+            font-size: 16px;
+        }
+        #created-by {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
     </style>
     <script type="importmap">
 			{
@@ -20,6 +46,11 @@
 		</script>
   </head>
   <body>
+    <div id="earth-name-container">
+    <div id="earth-name">Earth</div>
+    <div id="description">A 3D visualization of Earth with day and night textures, cloud layers, and a glowing atmosphere.</div>
+    </div>
+    <div id="created-by">Created by beagas</div>
     <script type="module" src="index.js"></script>
   </body>
 </html>
