@@ -136,22 +136,22 @@ function createStars(numOfStars) {
     starGroup = new THREE.Group();
 
     //Create new stars
-    for (let i = 0; i < numOfStars; i++) {
-        const star = new THREE.Mesh(
-            new THREE.SphereGeometry(0.1, 16, 16), // Small sphere for the star
-            new THREE.MeshBasicMaterial({ color: 0xffffff })
-        );
+    // for (let i = 0; i < numOfStars; i++) {
+    //     const star = new THREE.Mesh(
+    //         new THREE.SphereGeometry(0.1, 16, 16), // Small sphere for the star
+    //         new THREE.MeshBasicMaterial({ color: 0xffffff })
+    //     );
 
-        // Random position for each star
-        star.position.set(
-            (Math.random() - 0.5) * 100, // Random X position
-            (Math.random() - 0.5) * 100, // Random Y position
-            (Math.random() - 0.5) * 100  // Random Z position
-        );
+    //     // Random position for each star
+    //     star.position.set(
+    //         (Math.random() - 0.5) * 100, // Random X position
+    //         (Math.random() - 0.5) * 100, // Random Y position
+    //         (Math.random() - 0.5) * 100  // Random Z position
+    //     );
 
-        // Add star to the group
-        starGroup.add(star);
-    }
+    //     // Add star to the group
+    //     starGroup.add(star);
+    // }
 
     // Add the new group to the scene
     // scene.add(starGroup);
@@ -164,7 +164,7 @@ function createStars(numOfStars) {
     // starGroup = new THREE.Group();
 
     // Create new stars and add them to the group
-    const stars = getStarfield({ numStars: numOfStars });
+    let stars = getStarfield({ numStars: numOfStars });
     starGroup.add(stars);
 
     // Add the new group of stars to the scene
@@ -202,20 +202,15 @@ function init() {
 init();
 
 function renderControls() {
-    createCloudRotationButton();
-    sunTurnOfOnButton()
-    changeNumOfStars()
+    controlCloudRotation();
+    controlSun()
+    controlNumOfStars()
+    controlGlowColor()
 }
 
 renderControls()
 
-
-// const obj = {
-//     exampleProperty: 0
-// };
-// gui.add(obj, 'exampleProperty', 0, 100);
-
-function createCloudRotationButton() {
+function controlCloudRotation() {
     const cloudsFolder = gui.addFolder("Clouds");
     cloudsFolder.add(cloudsMesh.rotation, 'x', -0.5, Math.PI * 2).name('Rotate X Axis');
     cloudsFolder.add(cloudsMesh.rotation, 'y', -0.5, Math.PI * 2).name('Rotate Y Axis');
@@ -223,7 +218,7 @@ function createCloudRotationButton() {
     cloudsFolder.open();
 }
 
-function sunTurnOfOnButton() {
+function controlSun() {
     const lightParams = {
         isLightOn: true
     };
@@ -237,55 +232,26 @@ function sunTurnOfOnButton() {
     });
 }
 
-function changeNumOfStars() {
-
+function controlNumOfStars() {
     const starParams = {
-        exampleProperty: 100
+        exampleProperty: 1000
     };
-    // gui.add(starParams, 'exampleProperty', 0, 5000).name("Number of Stars");
-    // createStars(numOfStars);
-
-    gui.add(starParams, 'exampleProperty', 0, 5000).name('Number of Stars').step(1).onChange((value) => {
+    gui.add(starParams, 'exampleProperty', 0, 10000).name('Number of Stars').step(1000).onChange((value) => {
         createStars(value); // Call createStars with the new number of stars
     });
-
-
-
 }
 
+function controlGlowColor() {
+    fresnelMesh.rimHex = new Color(rimHex);
+    console.log('Converted rimHex to THREE.Color:', rimHex);
 
-// const obj = {
-//     exampleProperty: 0
-// };
-// gui.add(obj, 'exampleProperty', 0, 100);
+    const glowParams = {
+        GlowColor: `#${fresnelMesh.rimHex.getHexString()}`
+    };
 
-
-
-
-
-//gui.add(createEarth.lightDirection, "Sun");
-//-----------
-// // Convert numeric value of rimHex to THREE.Color
-// fresnelMesh.rimHex = new Color(rimHex);
-// console.log('Converted rimHex to THREE.Color:', rimHex);
-
-// // Initialize glow parameters
-// const glowParams = {
-//     GlowColor: `#${fresnelMesh.rimHex.getHexString()}` // Convert to hex string with '#'
-// };
-
-// // Add color control to dat.GUI
-// gui.addColor(glowParams, 'GlowColor').onChange((value) => {
-//     // Update the rimHex color using the new color from GUI
-//     fresnelMesh.rimHex.set(value);
-//     console.log('Updated rimHex:', fresnelMesh.rimHex);
-// });
-//-------------
-// const materialParams = {
-//     glowColor: fresnelMesh.rimHex.getHexString(),
-// };
-
-// gui
-//     .addColor(materialParams, "Glow Color")
-//     .onChange((value) => rimHex.set(value));
-// fresnelMesh.rimHex.set(value);
+    gui.addColor(glowParams, 'GlowColor').onChange((value) => {
+        fresnelMesh.rimHex.set(value);
+        fresnelMesh.material.uniforms.color1.value.set(fresnelMesh.rimHex);
+        fresnelMesh.material.needsUpdate = true;
+    });
+}
