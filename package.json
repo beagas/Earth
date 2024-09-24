@@ -10,7 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "dat.gui": "^0.7.9",
-    "selenium-webdriver": "^4.24.1"
+    "selenium-webdriver": "^4.24.1",
+    "three": "^0.168.0"
   },
-  "mocha": "^10.2.0"
+  "mocha": "^10.2.0",
+  "devDependencies": {
+    "@azure/static-web-apps-cli": "^2.0.1"
+  }
 }

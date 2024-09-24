@@ -1,9 +1,11 @@
 import * as THREE from "three";
+import React, { useEffect, useRef } from 'react';
 import { OrbitControls } from "jsm/controls/OrbitControls.js";
 import getStarfield from "./getStarfield.js";
 import { getFresnelMat } from "./getFresnelMat.js";
 import { Color } from 'three';
 import { GUI } from 'dat.gui';
+
 
 let scene, camera, renderer, earthGroup, dayNight, cloudsMesh, fresnelMesh;
 
@@ -22,6 +24,7 @@ function initScene() {
     const h = window.innerHeight;
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
+
     renderer.setSize(w, h);
     document.body.appendChild(renderer.domElement);
 
@@ -32,6 +35,7 @@ function initScene() {
     const far = 1000;
 
     camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    camera.updateProjectionMatrix();
     camera.position.z = 3;
 }
 
@@ -119,8 +123,8 @@ function createClouds(cloudMapJPG) {
 
 function createStars(numOfStars) {
     if (starGroup) {
-        scene.remove(starGroup); 
-        starGroup.children.forEach(star => star.geometry.dispose()); 
+        scene.remove(starGroup);
+        starGroup.children.forEach(star => star.geometry.dispose());
     }
     starGroup = new THREE.Group();
     let stars = getStarfield({ numStars: numOfStars });

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "earth": {
+      "appLocation": "threejs-earth",
+      "outputLocation": "earth/threejs-earth",
+      "appBuildCommand": "React"
+    }
+  }
+}
